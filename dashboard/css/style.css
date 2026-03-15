@@ -98,6 +98,24 @@ header h1 {
     background: #00e676;
 }
 
+.btn-monitor {
+    background: #6c5ce7;
+    color: #fff;
+}
+.btn-monitor:hover:not(:disabled) {
+    background: #a29bfe;
+}
+.btn-monitor:disabled {
+    background: #444;
+    color: #777;
+    cursor: not-allowed;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* ── Main Content ── */
 .main-content {
     display: flex;
@@ -190,6 +208,11 @@ header h1 {
     background: rgba(233, 69, 96, 0.15);
     color: #e94560;
     animation: pulse-alert 1s infinite;
+}
+
+.fence-status.idle {
+    background: rgba(108, 92, 231, 0.15);
+    color: #a29bfe;
 }
 
 @keyframes pulse-alert {

@@ -20,7 +20,7 @@ DEFAULT_FENCE = [
 ]
 
 # ── Simulator Settings ──
-SIMULATOR_INTERVAL = 2.0        # seconds between fake GPS updates
+SIMULATOR_INTERVAL = 10.0       # seconds between fake GPS updates
 SIMULATOR_NODE_NAME = "NODE_A"
 
 # ── LoRa Hardware Settings (RPi SX1278 via SPI) ──

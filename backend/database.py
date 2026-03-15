@@ -76,6 +76,13 @@ def get_alerts(limit: int = 50):
     return [dict(r) for r in rows]
 
 
+def clear_alerts():
+    conn = get_connection()
+    conn.execute("DELETE FROM alerts")
+    conn.commit()
+    conn.close()
+
+
 def get_gps_history(node_name: str, limit: int = 100):
     conn = get_connection()
     rows = conn.execute(

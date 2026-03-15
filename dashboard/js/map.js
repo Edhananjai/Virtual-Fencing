@@ -109,7 +109,8 @@ function cancelDrawing() {
 
 
 function updateAnimalMarker(nodeName, lat, lon, insideFence) {
-    const icon = insideFence ? animalIcon : alertIcon;
+    // null/undefined = not monitoring (use normal icon), true = inside, false = outside
+    const icon = (insideFence === false) ? alertIcon : animalIcon;
 
     if (animalMarkers[nodeName]) {
         animalMarkers[nodeName].setLatLng([lat, lon]);

@@ -5,6 +5,7 @@
 let ws = null;
 let alertCount = 0;
 let alertAudio = null;
+let isMonitoring = false;
 
 // ── Initialize ──
 document.addEventListener('DOMContentLoaded', async () => {
@@ -16,6 +17,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (config.fence && config.fence.length >= 3) {
         drawFence(config.fence);
+        // Enable start monitoring if fence exists
+        document.getElementById('btn-start-monitoring').disabled = false;
+    }
+
+    // Set initial monitoring state
+    if (config.monitoring) {
+        setMonitoringUI(true);
     }
 
     // Load existing alerts
@@ -28,6 +36,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btn-draw-fence').addEventListener('click', onDrawFence);
     document.getElementById('btn-clear-fence').addEventListener('click', onClearFence);
     document.getElementById('btn-save-fence').addEventListener('click', onSaveFence);
+    document.getElementById('btn-start-monitoring').addEventListener('click', onStartMonitoring);
+    document.getElementById('btn-stop-monitoring').addEventListener('click', onStopMonitoring);
 
     // Create alert sound
     try {
@@ -76,6 +86,10 @@ function handleMessage(msg) {
         case 'init':
             if (msg.fence && msg.fence.length >= 3) {
                 drawFence(msg.fence);
+                document.getElementById('btn-start-monitoring').disabled = false;
+            }
+            if (msg.monitoring !== undefined) {
+                setMonitoringUI(msg.monitoring);
             }
             if (msg.positions) {
                 for (const [name, pos] of Object.entries(msg.positions)) {
@@ -98,6 +112,17 @@ function handleMessage(msg) {
 
         case 'fence_updated':
             drawFence(msg.fence);
+            document.getElementById('btn-start-monitoring').disabled = false;
+            break;
+
+        case 'monitoring_started':
+            setMonitoringUI(true);
+            showToast('Monitoring started — watching for fence breaches.');
+            break;
+
+        case 'monitoring_stopped':
+            setMonitoringUI(false);
+            showToast('Monitoring stopped.');
             break;
     }
 }
@@ -116,11 +141,20 @@ function updateNodeInfo(data) {
         container.appendChild(card);
     }
 
-    const statusClass = data.inside_fence ? 'inside' : 'outside';
-    const statusText = data.inside_fence ? 'INSIDE FENCE' : 'OUTSIDE FENCE';
+    let statusClass, statusText;
+    if (data.inside_fence === null || data.inside_fence === undefined) {
+        statusClass = 'idle';
+        statusText = 'NOT MONITORING';
+    } else if (data.inside_fence) {
+        statusClass = 'inside';
+        statusText = 'INSIDE FENCE';
+    } else {
+        statusClass = 'outside';
+        statusText = 'OUTSIDE FENCE';
+    }
 
     card.innerHTML = `
-        <div class="node-name">${data.node_name}</div>
+        <div class="node-name">${escapeHtml(data.node_name)}</div>
         <div class="coords">${data.lat.toFixed(6)}, ${data.lon.toFixed(6)}</div>
         <div class="fence-status ${statusClass}">${statusText}</div>
     `;
@@ -249,9 +283,55 @@ async function onSaveFence() {
 
     if (resp.ok) {
         showToast('Fence saved successfully!');
+        document.getElementById('btn-start-monitoring').disabled = false;
     } else {
         showToast('Failed to save fence.');
     }
+}
+
+
+// ── Monitoring UI ──
+function setMonitoringUI(active) {
+    isMonitoring = active;
+    const startBtn = document.getElementById('btn-start-monitoring');
+    const stopBtn = document.getElementById('btn-stop-monitoring');
+    const drawBtn = document.getElementById('btn-draw-fence');
+
+    if (active) {
+        startBtn.style.display = 'none';
+        stopBtn.style.display = '';
+        drawBtn.disabled = true;
+    } else {
+        startBtn.style.display = '';
+        stopBtn.style.display = 'none';
+        drawBtn.disabled = false;
+    }
+}
+
+
+async function onStartMonitoring() {
+    const resp = await fetch('/api/monitoring/start', { method: 'POST' });
+    const data = await resp.json();
+
+    if (data.status === 'error') {
+        showToast(data.message);
+        return;
+    }
+
+    // Clear alert list in UI
+    alertCount = 0;
+    document.getElementById('alert-count').textContent = '0';
+    document.getElementById('alert-list').innerHTML = '<p class="muted">No alerts yet</p>';
+
+    setMonitoringUI(true);
+    showToast('Monitoring started — watching for fence breaches.');
+}
+
+
+async function onStopMonitoring() {
+    await fetch('/api/monitoring/stop', { method: 'POST' });
+    setMonitoringUI(false);
+    showToast('Monitoring stopped.');
 }
 
 

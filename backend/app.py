@@ -7,30 +7,69 @@ from fastapi.responses import FileResponse
 from backend.models import FencePolygon, GPSPoint
 from backend.geofence import point_in_polygon
 from backend.database import (
-    init_db, store_gps, store_alert, get_alerts,
+    init_db, store_gps, store_alert, get_alerts, clear_alerts,
     get_gps_history, save_fence, load_fence,
 )
-from config import DEFAULT_FENCE, DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON, DEFAULT_ZOOM
+from config import DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON, DEFAULT_ZOOM
 
 # ── Connected WebSocket clients ──
 connected_clients: list[WebSocket] = []
 
 # ── Current fence (in-memory for fast checks) ──
-current_fence: list[list[float]] = DEFAULT_FENCE.copy()
+current_fence: list[list[float]] = []
+
+# ── Monitoring state: fence checking only when True ──
+monitoring_active: bool = False
 
 # ── Latest node positions ──
 latest_positions: dict[str, dict] = {}
+
+# ── Background gateway task ──
+gateway_task = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    # Load fence from DB if available, else use default
+    # Load fence from DB if available (for display only; monitoring still off)
     stored = load_fence()
     if stored:
         global current_fence
         current_fence = json.loads(stored)
+
+    # Start the gateway (simulator or LoRa) inside the FastAPI event loop
+    global gateway_task
+    gateway_task = asyncio.create_task(run_gateway())
+
     yield
+
+    # Cleanup on shutdown
+    if gateway_task:
+        gateway_task.cancel()
+
+
+async def run_gateway():
+    """Start the appropriate gateway inside the server's event loop."""
+    import sys
+    from config import MODE
+
+    mode = MODE
+    if "--hardware" in sys.argv:
+        mode = "HARDWARE"
+    elif "--simulator" in sys.argv:
+        mode = "SIMULATOR"
+
+    # Small delay to let the server finish starting
+    await asyncio.sleep(1)
+
+    if mode == "HARDWARE":
+        from gateway.lora_handler import LoRaHandler
+        handler = LoRaHandler(callback=process_gps)
+        await handler.start()
+    else:
+        from gateway.simulator import GPSSimulator
+        simulator = GPSSimulator(callback=process_gps)
+        await simulator.start()
 
 
 app = FastAPI(title="Virtual Fencing", lifespan=lifespan)
@@ -53,6 +92,7 @@ async def get_config():
         "center_lon": DEFAULT_CENTER_LON,
         "zoom": DEFAULT_ZOOM,
         "fence": current_fence,
+        "monitoring": monitoring_active,
     }
 
 
@@ -69,6 +109,30 @@ async def set_fence(fence: FencePolygon):
 @app.get("/api/fence")
 async def get_fence():
     return {"fence": current_fence}
+
+
+@app.post("/api/monitoring/start")
+async def start_monitoring():
+    global monitoring_active
+    if len(current_fence) < 3:
+        return {"status": "error", "message": "Draw a fence first (at least 3 points)"}
+    monitoring_active = True
+    clear_alerts()
+    await broadcast({"type": "monitoring_started"})
+    return {"status": "ok", "monitoring": True}
+
+
+@app.post("/api/monitoring/stop")
+async def stop_monitoring():
+    global monitoring_active
+    monitoring_active = False
+    await broadcast({"type": "monitoring_stopped"})
+    return {"status": "ok", "monitoring": False}
+
+
+@app.get("/api/monitoring")
+async def get_monitoring():
+    return {"monitoring": monitoring_active}
 
 
 @app.get("/api/alerts")
@@ -98,6 +162,7 @@ async def websocket_endpoint(ws: WebSocket):
             "type": "init",
             "fence": current_fence,
             "positions": latest_positions,
+            "monitoring": monitoring_active,
         })
         while True:
             # Keep connection alive; dashboard can send commands here
@@ -123,24 +188,28 @@ async def broadcast(message: dict):
 # ── Called by gateway (simulator or LoRa handler) ──
 
 async def process_gps(node_name: str, lat: float, lon: float):
-    """Process an incoming GPS point: store, check fence, alert if needed."""
-    inside = point_in_polygon(lat, lon, current_fence)
+    """Process an incoming GPS point: store, check fence only if monitoring is active."""
+    # Check fence only when monitoring is on and fence exists
+    if monitoring_active and len(current_fence) >= 3:
+        inside = point_in_polygon(lat, lon, current_fence)
+    else:
+        inside = None  # Not monitoring yet — no fence status
 
-    store_gps(node_name, lat, lon, inside)
+    store_gps(node_name, lat, lon, inside if inside is not None else True)
 
     position_data = {
         "node_name": node_name,
         "lat": lat,
         "lon": lon,
-        "inside_fence": inside,
+        "inside_fence": inside,  # None = not monitoring, True/False = monitoring
     }
     latest_positions[node_name] = position_data
 
     # Broadcast GPS update to dashboard
     await broadcast({"type": "gps_update", **position_data})
 
-    # If outside fence → trigger alert
-    if not inside:
+    # If monitoring and outside fence → trigger alert
+    if inside is False:
         store_alert(node_name, lat, lon)
         alert_data = {
             "type": "alert",
