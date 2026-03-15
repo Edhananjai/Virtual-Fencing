@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Fencing Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <h1>&#128029; Virtual Fencing</h1>
+                <span id="connection-status" class="status-dot disconnected" title="Disconnected"></span>
+            </div>
+            <div class="header-right">
+                <button id="btn-draw-fence" class="btn btn-primary">Draw Fence</button>
+                <button id="btn-clear-fence" class="btn btn-danger" style="display:none;">Clear Fence</button>
+                <button id="btn-save-fence" class="btn btn-success" style="display:none;">Save Fence</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Map -->
+            <div id="map-container">
+                <div id="map"></div>
+            </div>
+
+            <!-- Side Panel -->
+            <div id="side-panel">
+                <!-- Node Info -->
+                <div class="panel-section">
+                    <h3>Node Status</h3>
+                    <div id="node-info">
+                        <p class="muted">Waiting for data...</p>
+                    </div>
+                </div>
+
+                <!-- Alert Panel -->
+                <div class="panel-section">
+                    <h3>Alerts <span id="alert-count" class="badge">0</span></h3>
+                    <div id="alert-list">
+                        <p class="muted">No alerts yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/js/map.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

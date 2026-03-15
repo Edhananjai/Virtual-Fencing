@@ -1,0 +1,258 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* ── Header ── */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: #16213e;
+    border-bottom: 2px solid #0f3460;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+header h1 {
+    font-size: 1.3rem;
+    color: #e94560;
+    font-weight: 600;
+}
+
+.header-right {
+    display: flex;
+    gap: 8px;
+}
+
+/* ── Status Dot ── */
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.connected {
+    background: #00e676;
+    box-shadow: 0 0 6px #00e676;
+}
+
+.status-dot.disconnected {
+    background: #ff5252;
+    box-shadow: 0 0 6px #ff5252;
+}
+
+/* ── Buttons ── */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #0f3460;
+    color: #e0e0e0;
+}
+.btn-primary:hover {
+    background: #1a4a8a;
+}
+
+.btn-danger {
+    background: #e94560;
+    color: #fff;
+}
+.btn-danger:hover {
+    background: #ff6b81;
+}
+
+.btn-success {
+    background: #00b894;
+    color: #fff;
+}
+.btn-success:hover {
+    background: #00e676;
+}
+
+/* ── Main Content ── */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+#map-container {
+    flex: 1;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+/* ── Side Panel ── */
+#side-panel {
+    width: 320px;
+    background: #16213e;
+    border-left: 2px solid #0f3460;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-section {
+    padding: 16px;
+    border-bottom: 1px solid #0f3460;
+}
+
+.panel-section h3 {
+    font-size: 0.95rem;
+    color: #e94560;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge {
+    background: #e94560;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.muted {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+/* ── Node Info Card ── */
+.node-card {
+    background: #1a1a2e;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.node-card .node-name {
+    font-weight: 600;
+    color: #53c5ff;
+    font-size: 0.9rem;
+}
+
+.node-card .coords {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.node-card .fence-status {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.fence-status.inside {
+    background: rgba(0, 232, 118, 0.15);
+    color: #00e676;
+}
+
+.fence-status.outside {
+    background: rgba(233, 69, 96, 0.15);
+    color: #e94560;
+    animation: pulse-alert 1s infinite;
+}
+
+@keyframes pulse-alert {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ── Alert List ── */
+.alert-item {
+    background: #1a1a2e;
+    border-left: 3px solid #e94560;
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
+}
+
+.alert-item .alert-time {
+    color: #888;
+    font-size: 0.72rem;
+}
+
+.alert-item .alert-node {
+    color: #e94560;
+    font-weight: 600;
+}
+
+.alert-item .alert-coords {
+    color: #aaa;
+    font-size: 0.72rem;
+}
+
+/* ── Alert Notification Toast ── */
+.toast {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background: #e94560;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slide-in 0.3s ease-out;
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.5);
+}
+
+.toast.hide {
+    animation: slide-out 0.3s ease-in forwards;
+}
+
+@keyframes slide-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-out {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* ── Leaflet overrides for dark theme ── */
+.leaflet-container {
+    background: #1a1a2e;
+}
