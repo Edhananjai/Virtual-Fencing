@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from backend.models import FencePolygon, GPSPoint
 from backend.geofence import point_in_polygon
 from backend.database import (
-    init_db, store_gps, store_alert, get_alerts, clear_alerts,
+    init_db, store_gps, store_alert, get_alerts, clear_alerts, clear_all_data,
     get_gps_history, save_fence, load_fence,
 )
 from config import DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON, DEFAULT_ZOOM
@@ -31,11 +31,8 @@ gateway_task = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    # Load fence from DB if available (for display only; monitoring still off)
-    stored = load_fence()
-    if stored:
-        global current_fence
-        current_fence = json.loads(stored)
+    # Fresh start: clear all previous session data
+    clear_all_data()
 
     # Start the gateway (simulator or LoRa) inside the FastAPI event loop
     global gateway_task

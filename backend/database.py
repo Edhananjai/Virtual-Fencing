@@ -83,6 +83,15 @@ def clear_alerts():
     conn.close()
 
 
+def clear_all_data():
+    conn = get_connection()
+    conn.execute("DELETE FROM gps_history")
+    conn.execute("DELETE FROM alerts")
+    conn.execute("DELETE FROM fence")
+    conn.commit()
+    conn.close()
+
+
 def get_gps_history(node_name: str, limit: int = 100):
     conn = get_connection()
     rows = conn.execute(
