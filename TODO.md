@@ -92,21 +92,21 @@ A virtual fencing system that tracks animal GPS locations via LoRa (SX1278) and 
 
 #### Prerequisites (One-time setup)
 
-| #  | What to install | Command / Link | Verify with |
-|----|----------------|----------------|-------------|
-| 1  | **Python 3.10+** | https://www.python.org/downloads/ (check "Add to PATH" during install) | `python --version` |
-| 2  | **pip** (comes with Python) | Already included | `pip --version` |
-| 3  | **Project dependencies** | `pip install fastapi uvicorn pydantic websockets` | `pip list` (should show all 4) |
+| #   | What to install             | Command / Link                                                         | Verify with                    |
+| --- | --------------------------- | ---------------------------------------------------------------------- | ------------------------------ |
+| 1   | **Python 3.10+**            | https://www.python.org/downloads/ (check "Add to PATH" during install) | `python --version`             |
+| 2   | **pip** (comes with Python) | Already included                                                       | `pip --version`                |
+| 3   | **Project dependencies**    | `pip install fastapi uvicorn pydantic websockets`                      | `pip list` (should show all 4) |
 
 #### Libraries Used (PC — Simulator Mode)
 
-| Library | Version | Purpose |
-|---------|---------|---------|
-| `fastapi` | 0.115+ | Web server + REST API + WebSocket |
-| `uvicorn` | 0.30+ | ASGI server to run FastAPI |
-| `pydantic` | 2.9+ | Data validation for API models |
-| `websockets` | 13.0+ | WebSocket protocol support |
-| `sqlite3` | Built-in | Database (no install needed) |
+| Library      | Version  | Purpose                           |
+| ------------ | -------- | --------------------------------- |
+| `fastapi`    | 0.115+   | Web server + REST API + WebSocket |
+| `uvicorn`    | 0.30+    | ASGI server to run FastAPI        |
+| `pydantic`   | 2.9+     | Data validation for API models    |
+| `websockets` | 13.0+    | WebSocket protocol support        |
+| `sqlite3`    | Built-in | Database (no install needed)      |
 
 #### Steps to Run (PC)
 
@@ -138,12 +138,12 @@ Step 7: To stop the server
 
 #### Useful Commands (PC)
 
-| Action | Command |
-|--------|---------|
-| Start server (simulator) | `python run.py` |
-| Start server (explicit) | `python run.py --simulator` || **Stop server** | **`Ctrl+C`** in the terminal where server is running |
-| **Force kill server** (if Ctrl+C doesn't work) | `Get-Process python \| Stop-Process -Force` || Delete old database | `del virtual_fencing.db` |
-| Install dependencies | `pip install -r requirements.txt` |
+| Action                                         | Command                                     |
+| ---------------------------------------------- | ------------------------------------------- | --- | ------------------- | ---------------------------------------------------- |
+| Start server (simulator)                       | `python run.py`                             |
+| Start server (explicit)                        | `python run.py --simulator`                 |     | **Stop server**     | **`Ctrl+C`** in the terminal where server is running |
+| **Force kill server** (if Ctrl+C doesn't work) | `Get-Process python \| Stop-Process -Force` |     | Delete old database | `del virtual_fencing.db`                             |
+| Install dependencies                           | `pip install -r requirements.txt`           |
 
 ---
 
@@ -161,43 +161,43 @@ Step 7: To stop the server
 > **Where:** Your PC (to flash the ESP32)
 > **File:** `firmware/node_a.ino`
 
-| #  | Step | Details |
-|----|------|---------|
-| 1  | **Install Arduino IDE** | https://www.arduino.cc/en/software |
-| 2  | **Add ESP32 board support** | Arduino IDE → File → Preferences → Additional Board Manager URLs → paste: `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json` → OK → Tools → Board → Board Manager → search "esp32" → Install |
-| 3  | **Install LoRa library** | Arduino IDE → Sketch → Include Library → Manage Libraries → search "LoRa" by Sandeep Mistry → Install |
-| 4  | **Install TinyGPS++ library** | Same as above → search "TinyGPS++" by Mikal Hart → Install |
-| 5  | **Connect ESP32 to PC via USB** | Use a micro-USB data cable |
-| 6  | **Select board** | Tools → Board → ESP32 Dev Module |
-| 7  | **Select port** | Tools → Port → COM# (the one that appeared when you plugged in ESP32) |
-| 8  | **Open firmware file** | File → Open → navigate to `firmware/node_a.ino` |
-| 9  | **Upload** | Click the Upload button (→ arrow) |
-| 10 | **Verify** | Open Serial Monitor (Tools → Serial Monitor) at 9600 baud → should see `[OK] NODE_A Ready` |
+| #   | Step                            | Details                                                                                                                                                                                                                                 |
+| --- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Install Arduino IDE**         | https://www.arduino.cc/en/software                                                                                                                                                                                                      |
+| 2   | **Add ESP32 board support**     | Arduino IDE → File → Preferences → Additional Board Manager URLs → paste: `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json` → OK → Tools → Board → Board Manager → search "esp32" → Install |
+| 3   | **Install LoRa library**        | Arduino IDE → Sketch → Include Library → Manage Libraries → search "LoRa" by Sandeep Mistry → Install                                                                                                                                   |
+| 4   | **Install TinyGPS++ library**   | Same as above → search "TinyGPS++" by Mikal Hart → Install                                                                                                                                                                              |
+| 5   | **Connect ESP32 to PC via USB** | Use a micro-USB data cable                                                                                                                                                                                                              |
+| 6   | **Select board**                | Tools → Board → ESP32 Dev Module                                                                                                                                                                                                        |
+| 7   | **Select port**                 | Tools → Port → COM# (the one that appeared when you plugged in ESP32)                                                                                                                                                                   |
+| 8   | **Open firmware file**          | File → Open → navigate to `firmware/node_a.ino`                                                                                                                                                                                         |
+| 9   | **Upload**                      | Click the Upload button (→ arrow)                                                                                                                                                                                                       |
+| 10  | **Verify**                      | Open Serial Monitor (Tools → Serial Monitor) at 9600 baud → should see `[OK] NODE_A Ready`                                                                                                                                              |
 
 ##### ESP32 Arduino Libraries Summary
 
-| Library | Author | Purpose |
-|---------|--------|---------|
-| `LoRa` | Sandeep Mistry | SX1278 LoRa communication |
-| `TinyGPS++` | Mikal Hart | Parse GPS NMEA sentences |
-| `SPI` | Built-in | SPI bus for LoRa module |
-| `HardwareSerial` | Built-in | Serial port for GPS module |
+| Library          | Author         | Purpose                    |
+| ---------------- | -------------- | -------------------------- |
+| `LoRa`           | Sandeep Mistry | SX1278 LoRa communication  |
+| `TinyGPS++`      | Mikal Hart     | Parse GPS NMEA sentences   |
+| `SPI`            | Built-in       | SPI bus for LoRa module    |
+| `HardwareSerial` | Built-in       | Serial port for GPS module |
 
 ##### ESP32 Wiring (do this BEFORE powering on)
 
 ```
 ESP32          SX1278 LoRa         NEO-6M GPS       Buzzer        LED
 ────────────   ──────────────      ──────────────   ──────────    ──────────
-GPIO 5 (SS)  → NSS                                              
-GPIO 14      → RESET                                            
-GPIO 2       → DIO0                                             
-GPIO 18      → SCK                                              
-GPIO 23      → MOSI                                             
-GPIO 19      → MISO                                             
-3.3V         → VCC                 VCC                          
+GPIO 5 (SS)  → NSS
+GPIO 14      → RESET
+GPIO 2       → DIO0
+GPIO 18      → SCK
+GPIO 23      → MOSI
+GPIO 19      → MISO
+3.3V         → VCC                 VCC
 GND          → GND                 GND              GND (-)     Cathode (-)
-GPIO 16      →                     TX                           
-GPIO 17      →                     RX                           
+GPIO 16      →                     TX
+GPIO 17      →                     RX
 GPIO 26      →                                      + (positive)
 GPIO 25      →                                                  Anode (+) via 220Ω
 ```
@@ -211,19 +211,19 @@ GPIO 25      →                                                  Anode (+) via 
 > **Where:** Raspberry Pi (SSH into it or use monitor+keyboard)
 > **Files:** Everything except `firmware/` folder
 
-| #  | Step | Command / Action | Where |
-|----|------|-----------------|-------|
-| 1  | **Install Raspberry Pi OS** | Use Raspberry Pi Imager → flash to SD card | Your PC |
-| 2  | **Boot RPi & connect to WiFi** | First-time setup wizard | RPi |
-| 3  | **Enable SPI** | `sudo raspi-config` → Interface Options → SPI → Enable → Reboot | RPi terminal |
-| 4  | **Update system** | `sudo apt update && sudo apt upgrade -y` | RPi terminal |
-| 5  | **Install Python 3 & pip** | `sudo apt install python3 python3-pip -y` | RPi terminal |
-| 6  | **Copy project to RPi** | Use USB drive, SCP, or git clone (see below) | RPi terminal |
-| 7  | **Install Python dependencies** | `pip install fastapi uvicorn pydantic websockets spidev RPi.GPIO` | RPi terminal |
-| 8  | **Wire SX1278 to RPi** | See wiring diagram below | Physical |
-| 9  | **Change mode in config** | Edit `config.py` → set `MODE = "HARDWARE"` | RPi terminal |
-| 10 | **Start the server** | `python run.py` or `python run.py --hardware` | RPi terminal |
-| 11 | **Open dashboard** | On any device on same WiFi: `http://<RPi-IP>:8000` | Any browser |
+| #   | Step                            | Command / Action                                                  | Where        |
+| --- | ------------------------------- | ----------------------------------------------------------------- | ------------ |
+| 1   | **Install Raspberry Pi OS**     | Use Raspberry Pi Imager → flash to SD card                        | Your PC      |
+| 2   | **Boot RPi & connect to WiFi**  | First-time setup wizard                                           | RPi          |
+| 3   | **Enable SPI**                  | `sudo raspi-config` → Interface Options → SPI → Enable → Reboot   | RPi terminal |
+| 4   | **Update system**               | `sudo apt update && sudo apt upgrade -y`                          | RPi terminal |
+| 5   | **Install Python 3 & pip**      | `sudo apt install python3 python3-pip -y`                         | RPi terminal |
+| 6   | **Copy project to RPi**         | Use USB drive, SCP, or git clone (see below)                      | RPi terminal |
+| 7   | **Install Python dependencies** | `pip install fastapi uvicorn pydantic websockets spidev RPi.GPIO` | RPi terminal |
+| 8   | **Wire SX1278 to RPi**          | See wiring diagram below                                          | Physical     |
+| 9   | **Change mode in config**       | Edit `config.py` → set `MODE = "HARDWARE"`                        | RPi terminal |
+| 10  | **Start the server**            | `python run.py` or `python run.py --hardware`                     | RPi terminal |
+| 11  | **Open dashboard**              | On any device on same WiFi: `http://<RPi-IP>:8000`                | Any browser  |
 
 ##### Copy Project to RPi (choose one method)
 
@@ -243,17 +243,18 @@ scp -r "C:\Users\YourName\Downloads\Virtual Fencing" pi@192.168.x.x:~/Virtual-Fe
 
 ##### Raspberry Pi Libraries Summary
 
-| Library | Install command | Purpose |
-|---------|----------------|---------|
-| `fastapi` | `pip install fastapi` | Web server + REST API |
-| `uvicorn` | `pip install uvicorn` | ASGI server |
-| `pydantic` | `pip install pydantic` | Data validation |
-| `websockets` | `pip install websockets` | WebSocket support |
-| `spidev` | `pip install spidev` | SPI communication with SX1278 |
-| `RPi.GPIO` | `pip install RPi.GPIO` | GPIO pin control on RPi |
-| `sqlite3` | Built-in | Database |
+| Library      | Install command          | Purpose                       |
+| ------------ | ------------------------ | ----------------------------- |
+| `fastapi`    | `pip install fastapi`    | Web server + REST API         |
+| `uvicorn`    | `pip install uvicorn`    | ASGI server                   |
+| `pydantic`   | `pip install pydantic`   | Data validation               |
+| `websockets` | `pip install websockets` | WebSocket support             |
+| `spidev`     | `pip install spidev`     | SPI communication with SX1278 |
+| `RPi.GPIO`   | `pip install RPi.GPIO`   | GPIO pin control on RPi       |
+| `sqlite3`    | Built-in                 | Database                      |
 
 **Install all at once:**
+
 ```bash
 pip install fastapi uvicorn pydantic websockets spidev RPi.GPIO
 ```
@@ -290,49 +291,49 @@ hostname -I
 
 #### Useful Commands (Raspberry Pi)
 
-| Action | Command |
-|--------|---------|
-| Start server (hardware mode) | `python run.py --hardware` |
-| Start server (simulator on RPi) | `python run.py --simulator` |
-| Start on boot (optional) | Add to `/etc/rc.local`: `cd /home/pi/Virtual-Fencing && python run.py --hardware &` |
-| Check SPI is enabled | `ls /dev/spi*` (should show `/dev/spidev0.0`) |
-| Check LoRa module detected | Server log should show `[LORA] SX1278 initialized at 433.0 MHz` |
-| View server logs | Output appears in terminal where you ran `python run.py` |
-| Stop server | **`Ctrl+C`** in the terminal where server is running |
-| **Force kill server** (if Ctrl+C doesn't work) | `kill $(lsof -t -i:8000)` |
-| Delete old database | `rm virtual_fencing.db` |
+| Action                                         | Command                                                                             |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Start server (hardware mode)                   | `python run.py --hardware`                                                          |
+| Start server (simulator on RPi)                | `python run.py --simulator`                                                         |
+| Start on boot (optional)                       | Add to `/etc/rc.local`: `cd /home/pi/Virtual-Fencing && python run.py --hardware &` |
+| Check SPI is enabled                           | `ls /dev/spi*` (should show `/dev/spidev0.0`)                                       |
+| Check LoRa module detected                     | Server log should show `[LORA] SX1278 initialized at 433.0 MHz`                     |
+| View server logs                               | Output appears in terminal where you ran `python run.py`                            |
+| Stop server                                    | **`Ctrl+C`** in the terminal where server is running                                |
+| **Force kill server** (if Ctrl+C doesn't work) | `kill $(lsof -t -i:8000)`                                                           |
+| Delete old database                            | `rm virtual_fencing.db`                                                             |
 
 ---
 
 ### QUICK REFERENCE: Which file runs where?
 
-| File | Runs on | Mode |
-|------|---------|------|
-| `config.py` | PC or RPi | Both |
-| `run.py` | PC or RPi | Both |
-| `backend/app.py` | PC or RPi | Both |
-| `backend/geofence.py` | PC or RPi | Both |
-| `backend/database.py` | PC or RPi | Both |
-| `backend/models.py` | PC or RPi | Both |
-| `gateway/simulator.py` | PC or RPi | SIMULATOR only |
-| `gateway/lora_handler.py` | **RPi only** | HARDWARE only |
-| `dashboard/*` | Served to any browser | Both |
-| `firmware/node_a.ino` | **Flashed to ESP32** | HARDWARE only |
+| File                      | Runs on               | Mode           |
+| ------------------------- | --------------------- | -------------- |
+| `config.py`               | PC or RPi             | Both           |
+| `run.py`                  | PC or RPi             | Both           |
+| `backend/app.py`          | PC or RPi             | Both           |
+| `backend/geofence.py`     | PC or RPi             | Both           |
+| `backend/database.py`     | PC or RPi             | Both           |
+| `backend/models.py`       | PC or RPi             | Both           |
+| `gateway/simulator.py`    | PC or RPi             | SIMULATOR only |
+| `gateway/lora_handler.py` | **RPi only**          | HARDWARE only  |
+| `dashboard/*`             | Served to any browser | Both           |
+| `firmware/node_a.ino`     | **Flashed to ESP32**  | HARDWARE only  |
 
 ---
 
 ### TROUBLESHOOTING
 
-| Problem | Cause | Fix |
-|---------|-------|-----|
-| `LoRa init failed` on ESP32 | Bad wiring or 5V on SX1278 | Check wiring, use 3.3V only |
-| `SX1278 not found` on RPi | SPI not enabled or bad wiring | Run `sudo raspi-config` → enable SPI; check wiring |
-| `ModuleNotFoundError: spidev` | Missing RPi library | `pip install spidev RPi.GPIO` |
-| Dashboard not loading | Server not running or wrong URL | Check terminal for errors; use correct IP |
-| No GPS data on ESP32 | GPS module needs open sky | Take outdoors; wait 1-2 min for GPS lock |
-| False alerts immediately | Old database from previous session | Delete `virtual_fencing.db` and restart |
-| Animal always "outside" | Fence not saved or wrong geofence | Redraw fence, save, then start monitoring |
-| Port 8000 already in use | Previous server still running | Kill it: `Ctrl+C` or `kill $(lsof -t -i:8000)` on Linux |
+| Problem                       | Cause                              | Fix                                                     |
+| ----------------------------- | ---------------------------------- | ------------------------------------------------------- |
+| `LoRa init failed` on ESP32   | Bad wiring or 5V on SX1278         | Check wiring, use 3.3V only                             |
+| `SX1278 not found` on RPi     | SPI not enabled or bad wiring      | Run `sudo raspi-config` → enable SPI; check wiring      |
+| `ModuleNotFoundError: spidev` | Missing RPi library                | `pip install spidev RPi.GPIO`                           |
+| Dashboard not loading         | Server not running or wrong URL    | Check terminal for errors; use correct IP               |
+| No GPS data on ESP32          | GPS module needs open sky          | Take outdoors; wait 1-2 min for GPS lock                |
+| False alerts immediately      | Old database from previous session | Delete `virtual_fencing.db` and restart                 |
+| Animal always "outside"       | Fence not saved or wrong geofence  | Redraw fence, save, then start monitoring               |
+| Port 8000 already in use      | Previous server still running      | Kill it: `Ctrl+C` or `kill $(lsof -t -i:8000)` on Linux |
 
 ---
 
@@ -416,10 +417,10 @@ If you need to change which GPIO pins are used (e.g., pin conflict with another 
 
 #### Overview: Where pins are defined
 
-| Device | File to edit | What to change |
-|--------|-------------|----------------|
-| **ESP32** | `firmware/node_a.ino` (lines 13–20) | `#define` statements at top of file |
-| **Raspberry Pi** | `config.py` (lines 31–34) | Python variables under `LoRa Hardware Settings` |
+| Device           | File to edit                        | What to change                                  |
+| ---------------- | ----------------------------------- | ----------------------------------------------- |
+| **ESP32**        | `firmware/node_a.ino` (lines 13–20) | `#define` statements at top of file             |
+| **Raspberry Pi** | `config.py` (lines 31–34)           | Python variables under `LoRa Hardware Settings` |
 
 **No other files need to be changed.** The backend, dashboard, simulator, and geofence code are all pin-independent.
 
@@ -430,6 +431,7 @@ If you need to change which GPIO pins are used (e.g., pin conflict with another 
 **File:** `firmware/node_a.ino`
 
 **Current default pin mapping:**
+
 ```c
 #define LORA_SS    5      // LoRa chip select (NSS)
 #define LORA_RST   14     // LoRa reset
@@ -441,6 +443,7 @@ If you need to change which GPIO pins are used (e.g., pin conflict with another 
 ```
 
 **To change a pin:** Edit the number after `#define`. Example — move buzzer to GPIO 27:
+
 ```c
 #define BUZZER_PIN 27     // Changed from 26 to 27
 ```
@@ -449,38 +452,39 @@ If you need to change which GPIO pins are used (e.g., pin conflict with another 
 
 **CRITICAL RULES — ESP32 pins you CANNOT change:**
 
-| Pin | Why it's fixed |
-|-----|---------------|
-| GPIO 18 (SCK) | Hardware SPI clock — fixed by ESP32 silicon |
+| Pin            | Why it's fixed                                 |
+| -------------- | ---------------------------------------------- |
+| GPIO 18 (SCK)  | Hardware SPI clock — fixed by ESP32 silicon    |
 | GPIO 23 (MOSI) | Hardware SPI data out — fixed by ESP32 silicon |
-| GPIO 19 (MISO) | Hardware SPI data in — fixed by ESP32 silicon |
+| GPIO 19 (MISO) | Hardware SPI data in — fixed by ESP32 silicon  |
 
 These three SPI pins are hard-wired inside the ESP32 chip. The LoRa library uses the hardware SPI bus, so **SCK, MOSI, MISO cannot be reassigned**.
 
 **ESP32 pins you CAN change freely:**
 
-| Pin | What it controls | Any constraint? |
-|-----|-----------------|-----------------|
-| `LORA_SS` | LoRa chip select | Any free GPIO |
-| `LORA_RST` | LoRa reset | Any free GPIO |
-| `LORA_DIO0` | LoRa interrupt | Any free GPIO with interrupt support (most GPIOs) |
-| `GPS_RX` | GPS serial in | Must support HardwareSerial (UART1/UART2). Safe choices: 16, 32, 33, 36, 39 |
-| `GPS_TX` | GPS serial out | Must support HardwareSerial. Safe choices: 17, 25, 26, 27 |
-| `LED_PIN` | Alert LED | Any free GPIO |
-| `BUZZER_PIN` | Alert buzzer | Any free GPIO |
+| Pin          | What it controls | Any constraint?                                                             |
+| ------------ | ---------------- | --------------------------------------------------------------------------- |
+| `LORA_SS`    | LoRa chip select | Any free GPIO                                                               |
+| `LORA_RST`   | LoRa reset       | Any free GPIO                                                               |
+| `LORA_DIO0`  | LoRa interrupt   | Any free GPIO with interrupt support (most GPIOs)                           |
+| `GPS_RX`     | GPS serial in    | Must support HardwareSerial (UART1/UART2). Safe choices: 16, 32, 33, 36, 39 |
+| `GPS_TX`     | GPS serial out   | Must support HardwareSerial. Safe choices: 17, 25, 26, 27                   |
+| `LED_PIN`    | Alert LED        | Any free GPIO                                                               |
+| `BUZZER_PIN` | Alert buzzer     | Any free GPIO                                                               |
 
 **ESP32 pins to AVOID:**
 
-| Pin(s) | Reason |
-|--------|--------|
-| GPIO 0 | Boot mode select — can prevent flashing |
-| GPIO 1 (TX0) | Used by USB Serial (Serial Monitor) |
-| GPIO 3 (RX0) | Used by USB Serial (Serial Monitor) |
-| GPIO 6–11 | Connected to internal flash memory — will crash the ESP32 |
-| GPIO 12 | Boot voltage select — may prevent boot if pulled HIGH |
+| Pin(s)              | Reason                                                             |
+| ------------------- | ------------------------------------------------------------------ |
+| GPIO 0              | Boot mode select — can prevent flashing                            |
+| GPIO 1 (TX0)        | Used by USB Serial (Serial Monitor)                                |
+| GPIO 3 (RX0)        | Used by USB Serial (Serial Monitor)                                |
+| GPIO 6–11           | Connected to internal flash memory — will crash the ESP32          |
+| GPIO 12             | Boot voltage select — may prevent boot if pulled HIGH              |
 | GPIO 34, 35, 36, 39 | Input-only — CANNOT be used for outputs (LED, buzzer, LoRa SS/RST) |
 
 **Checklist after changing ESP32 pins:**
+
 - [ ] Edited `#define` values in `firmware/node_a.ino`
 - [ ] Made sure new pin is NOT in the "avoid" list above
 - [ ] Made sure SPI pins (18, 23, 19) are NOT changed
@@ -497,6 +501,7 @@ These three SPI pins are hard-wired inside the ESP32 chip. The LoRa library uses
 **File:** `config.py`
 
 **Current default pin mapping:**
+
 ```python
 LORA_SPI_BUS = 0           # SPI bus number (0 or 1)
 LORA_SPI_DEVICE = 0        # SPI device (chip select: 0=CE0, 1=CE1)
@@ -506,6 +511,7 @@ LORA_DIO0_PIN = 24         # GPIO 24 — LoRa interrupt (RX done)
 ```
 
 **To change a pin:** Edit the number in `config.py`. Example — move reset to GPIO 22:
+
 ```python
 LORA_RESET_PIN = 22        # Changed from 25 to 22
 ```
@@ -514,42 +520,45 @@ LORA_RESET_PIN = 22        # Changed from 25 to 22
 
 **CRITICAL RULES — RPi pins you CANNOT change:**
 
-| Pin | BCM GPIO | Why it's fixed |
-|-----|----------|---------------|
-| SPI_SCLK | GPIO 11 | Hardware SPI0 clock — fixed by RPi silicon |
-| SPI_MOSI | GPIO 10 | Hardware SPI0 data out — fixed by RPi silicon |
-| SPI_MISO | GPIO 9 | Hardware SPI0 data in — fixed by RPi silicon |
+| Pin      | BCM GPIO | Why it's fixed                                |
+| -------- | -------- | --------------------------------------------- |
+| SPI_SCLK | GPIO 11  | Hardware SPI0 clock — fixed by RPi silicon    |
+| SPI_MOSI | GPIO 10  | Hardware SPI0 data out — fixed by RPi silicon |
+| SPI_MISO | GPIO 9   | Hardware SPI0 data in — fixed by RPi silicon  |
 
 These SPI data pins are fixed by the Raspberry Pi hardware. The `spidev` library uses the kernel SPI driver, which only works with these pins.
 
 **RPi pins you CAN change freely:**
 
-| Setting | What it controls | Constraint |
-|---------|-----------------|------------|
-| `LORA_CS_PIN` | LoRa chip select | Default: GPIO 8 (CE0). Can use any free GPIO, but GPIO 8 (CE0) or GPIO 7 (CE1) are preferred for SPI |
-| `LORA_RESET_PIN` | LoRa module reset | Any free GPIO |
-| `LORA_DIO0_PIN` | LoRa RX-done interrupt | Any free GPIO |
+| Setting          | What it controls       | Constraint                                                                                           |
+| ---------------- | ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| `LORA_CS_PIN`    | LoRa chip select       | Default: GPIO 8 (CE0). Can use any free GPIO, but GPIO 8 (CE0) or GPIO 7 (CE1) are preferred for SPI |
+| `LORA_RESET_PIN` | LoRa module reset      | Any free GPIO                                                                                        |
+| `LORA_DIO0_PIN`  | LoRa RX-done interrupt | Any free GPIO                                                                                        |
 
 **RPi pins to AVOID:**
 
-| Pin(s) | BCM GPIO | Reason |
-|--------|----------|--------|
-| GPIO 0, 1 | I2C EEPROM | Reserved for HAT identification |
-| GPIO 2, 3 | I2C1 SDA/SCL | Used by I2C bus (if you need I2C for other sensors) |
-| GPIO 14, 15 | UART TX/RX | Used by serial console (unless disabled) |
-| GPIO 9, 10, 11 | SPI0 | Already used by LoRa SPI data lines — don't reuse |
+| Pin(s)         | BCM GPIO     | Reason                                              |
+| -------------- | ------------ | --------------------------------------------------- |
+| GPIO 0, 1      | I2C EEPROM   | Reserved for HAT identification                     |
+| GPIO 2, 3      | I2C1 SDA/SCL | Used by I2C bus (if you need I2C for other sensors) |
+| GPIO 14, 15    | UART TX/RX   | Used by serial console (unless disabled)            |
+| GPIO 9, 10, 11 | SPI0         | Already used by LoRa SPI data lines — don't reuse   |
 
 **Using SPI1 instead of SPI0 (advanced):**
 If SPI0 pins conflict with something, you can switch to SPI1:
+
 ```python
 LORA_SPI_BUS = 1           # Use SPI1 instead of SPI0
 LORA_SPI_DEVICE = 0
 LORA_CS_PIN = 18           # SPI1 CE0 = GPIO 18
 # SPI1 pins: SCLK=GPIO 21, MOSI=GPIO 20, MISO=GPIO 19
 ```
+
 Note: SPI1 must be enabled via `dtoverlay=spi1-1cs` in `/boot/config.txt`.
 
 **Checklist after changing RPi pins:**
+
 - [ ] Edited pin values in `config.py`
 - [ ] Made sure new pin is NOT in the "avoid" list above
 - [ ] Made sure SPI data pins (9, 10, 11) are NOT changed (unless switching to SPI1)
