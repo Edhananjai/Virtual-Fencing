@@ -50,7 +50,7 @@ void setup()
     digitalWrite(BUZZER_PIN, LOW);
 
     LoRa.setPins(LORA_SS, LORA_RST, LORA_DIO0);
-
+    Serial.println("[DEBUG] Attempting LoRa init...");
     if (!LoRa.begin(433E6))
     {
         Serial.println("[ERROR] LoRa init failed!");
